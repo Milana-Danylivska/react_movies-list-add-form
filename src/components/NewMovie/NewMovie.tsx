@@ -9,33 +9,39 @@ type Props = {
 export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   const [formKey, setFormKey] = useState(0);
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
-  const [imdbUrl, setImdbUrl] = useState('');
-  const [imdbId, setImdbId] = useState('');
+  const [newMovie, setNewMovie] = useState<Movie>({
+    title: '',
+    description: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+  });
 
   const disableButton =
-    !title.trim() || !imgUrl.trim() || !imdbUrl.trim() || !imdbId.trim();
+    !newMovie.title.trim() ||
+    !newMovie.imgUrl.trim() ||
+    !newMovie.imdbUrl.trim() ||
+    !newMovie.imdbId.trim();
+
+  const handleChange = (field: keyof Movie, value: string) => {
+    setNewMovie(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBlur = (field: keyof Movie) => {
+    setNewMovie(prev => ({ ...prev, [field]: prev[field].trim() }));
+  };
 
   const handleSend = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const newMovie: Movie = {
-      title: title.trim(),
-      description: description.trim(),
-      imgUrl: imgUrl.trim(),
-      imdbUrl: imdbUrl.trim(),
-      imdbId: imdbId.trim(),
-    };
-
-    onAdd(newMovie);
-
-    setTitle('');
-    setDescription('');
-    setImgUrl('');
-    setImdbUrl('');
-    setImdbId('');
+    onAdd({
+      ...newMovie,
+      title: newMovie.title.trim(),
+      description: newMovie.description.trim(),
+      imgUrl: newMovie.imgUrl.trim(),
+      imdbUrl: newMovie.imdbUrl.trim(),
+      imdbId: newMovie.imdbId.trim(),
+    });
 
     setFormKey(prevKey => prevKey + 1);
   };
@@ -47,44 +53,44 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
       <TextField
         name="title"
         label="Title"
-        value={title}
-        onChange={value => setTitle(value)}
-        onBlur={() => setTitle(title.trim())}
+        value={newMovie.title}
+        onChange={value => handleChange('title', value)}
+        onBlur={() => handleBlur('title')}
         required
       />
 
       <TextField
         name="description"
         label="Description"
-        value={description}
-        onChange={value => setDescription(value)}
-        onBlur={() => setDescription(description.trim())}
+        value={newMovie.description}
+        onChange={value => handleChange('description', value)}
+        onBlur={() => handleBlur('description')}
       />
 
       <TextField
         name="imgUrl"
         label="Image URL"
-        value={imgUrl}
-        onChange={value => setImgUrl(value)}
-        onBlur={() => setImgUrl(imgUrl.trim())}
+        value={newMovie.imgUrl}
+        onChange={value => handleChange('imgUrl', value)}
+        onBlur={() => handleBlur('imgUrl')}
         required
       />
 
       <TextField
         name="imdbUrl"
         label="Imdb URL"
-        value={imdbUrl}
-        onChange={value => setImdbUrl(value)}
-        onBlur={() => setImdbUrl(imdbUrl.trim())}
+        value={newMovie.imdbUrl}
+        onChange={value => handleChange('imdbUrl', value)}
+        onBlur={() => handleBlur('imdbUrl')}
         required
       />
 
       <TextField
         name="imdbId"
         label="Imdb ID"
-        value={imdbId}
-        onChange={value => setImdbId(value)}
-        onBlur={() => setImdbId(imdbId.trim())}
+        value={newMovie.imdbId}
+        onChange={value => handleChange('imdbId', value)}
+        onBlur={() => handleBlur('imdbId')}
         required
       />
 
